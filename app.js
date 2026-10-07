@@ -1,40 +1,25 @@
 let userScore = 0;
-
 let compScore = 0;
 
+const choices = document.querySelectorAll(".choice");
 
-const choices =
-    document.querySelectorAll(".choice");
-
-
-const msg =
-    document.querySelector("#msg");
-
+const msg = document.querySelector("#msg");
 
 const userScorePara =
     document.querySelector("#user-score");
 
-
 const compScorePara =
     document.querySelector("#comp-score");
-
 
 const computerChoiceImg =
     document.querySelector("#computer-choice-img");
 
-
 const computerChoiceName =
     document.querySelector("#computer-choice-name");
-
 
 const computerCard =
     document.querySelector(".computer-card");
 
-
-
-/* =========================
-   COMPUTER CHOICE
-========================= */
 
 const genCompChoice = () => {
 
@@ -44,44 +29,41 @@ const genCompChoice = () => {
         "scissors"
     ];
 
-
     const randIdx =
-        Math.floor(
-            Math.random() * options.length
-        );
-
+        Math.floor(Math.random() * options.length);
 
     return options[randIdx];
 };
 
 
+const resetComputerChoice = () => {
 
-/* =========================
-   SHOW COMPUTER CHOICE
-========================= */
+    computerChoiceName.innerText = "WAITING...";
 
-const showComputerChoice =
-    (compChoice) => {
+    computerChoiceImg.style.opacity = "0";
+
+    computerChoiceImg.alt = "Waiting";
+};
+
+
+const showComputerChoice = (compChoice) => {
 
     computerChoiceImg.src =
         `./images/${compChoice}.png`;
 
-
     computerChoiceImg.alt =
         compChoice;
-
 
     computerChoiceName.innerText =
         compChoice;
 
+    computerChoiceImg.style.opacity = "1";
 
     computerCard.classList.remove(
         "computer-show"
     );
 
-
     void computerCard.offsetWidth;
-
 
     computerCard.classList.add(
         "computer-show"
@@ -89,225 +71,142 @@ const showComputerChoice =
 };
 
 
-
-/* =========================
-   ANIMATION
-========================= */
-
 const animate = (element) => {
 
     element.classList.remove("pop");
 
-
     void element.offsetWidth;
-
 
     element.classList.add("pop");
 };
 
-
-
-/* =========================
-   DRAW GAME
-========================= */
 
 const drawGame = () => {
 
     msg.innerText =
         "It's a Draw! Play Again";
 
-
     msg.style.background =
         "#1c2b45";
 
-
     msg.style.borderColor =
         "#5865f2";
-
 
     animate(msg);
 };
 
 
-
-/* =========================
-   SHOW WINNER
-========================= */
-
 const showWinner =
     (userWin, userChoice, compChoice) => {
-
 
     if (userWin) {
 
         userScore++;
 
-
         userScorePara.innerText =
             userScore;
-
 
         msg.innerText =
             `You Win! ${userChoice} beats ${compChoice}`;
 
-
         msg.style.background =
             "linear-gradient(135deg, #047857, #10b981)";
-
 
         msg.style.borderColor =
             "#10b981";
 
-
         animate(userScorePara);
 
-    }
-
-
-    else {
+    } else {
 
         compScore++;
-
 
         compScorePara.innerText =
             compScore;
 
-
         msg.innerText =
             `You Lost! ${compChoice} beats ${userChoice}`;
-
 
         msg.style.background =
             "linear-gradient(135deg, #be123c, #f43f5e)";
 
-
         msg.style.borderColor =
             "#f43f5e";
 
-
         animate(compScorePara);
     }
-
 
     animate(msg);
 };
 
 
+const playGame = (userChoice) => {
 
-/* =========================
-   PLAY GAME
-========================= */
+    /* Start new round */
 
-const playGame =
-    (userChoice) => {
+    resetComputerChoice();
 
 
-    /* Computer chooses */
+    /* Computer secretly chooses */
 
     const compChoice =
         genCompChoice();
 
 
-    /* Show computer choice */
+    /* Show computer choice after short delay */
 
-    showComputerChoice(
-        compChoice
-    );
+    setTimeout(() => {
 
-
-    /* Draw */
-
-    if (
-        userChoice ===
-        compChoice
-    ) {
-
-        drawGame();
-
-        return;
-    }
+        showComputerChoice(compChoice);
 
 
-    let userWin;
+        if (userChoice === compChoice) {
+
+            drawGame();
+
+            return;
+        }
 
 
-
-    /* =========================
-       ROCK
-    ========================= */
-
-    if (
-        userChoice ===
-        "rock"
-    ) {
-
-        userWin =
-            compChoice !== "paper";
-    }
+        let userWin;
 
 
+        if (userChoice === "rock") {
 
-    /* =========================
-       PAPER
-    ========================= */
+            userWin =
+                compChoice === "scissors";
 
-    else if (
-        userChoice ===
-        "paper"
-    ) {
+        } else if (userChoice === "paper") {
 
-        userWin =
-            compChoice !== "scissors";
-    }
+            userWin =
+                compChoice === "rock";
 
+        } else {
 
-
-    /* =========================
-       SCISSORS
-    ========================= */
-
-    else {
-
-        userWin =
-            compChoice !== "rock";
-    }
+            userWin =
+                compChoice === "paper";
+        }
 
 
+        showWinner(
+            userWin,
+            userChoice,
+            compChoice
+        );
 
-    /* Show result */
-
-    showWinner(
-        userWin,
-        userChoice,
-        compChoice
-    );
+    }, 500);
 };
 
 
+choices.forEach((choice) => {
 
-/* =========================
-   CLICK EVENTS
-========================= */
+    choice.addEventListener("click", () => {
 
-choices.forEach(
-    (choice) => {
+        const userChoice =
+            choice.getAttribute("id");
 
-        choice.addEventListener(
-            "click",
-            () => {
+        playGame(userChoice);
 
-                const userChoice =
-                    choice.getAttribute(
-                        "id"
-                    );
+    });
 
-
-                playGame(
-                    userChoice
-                );
-
-            }
-        );
-
-    }
-);
+});
