@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Rock Paper Scissors Game</title>
+
+
+    <style>
+
+        /* =========================
+           RESET
+        ========================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        /* =========================
+           BODY
+        ========================= */
+
+        body {
+
+            min-height: 100vh;
+
+            font-family: Arial, Helvetica, sans-serif;
+
+            color: white;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 10% 15%,
+                    rgba(0, 217, 255, 0.18),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 90% 85%,
+                    rgba(139, 92, 246, 0.18),
+                    transparent 30%
+                ),
+
+                linear-gradient(
+                    135deg,
+                    #050b16,
+                    #0a1426 45%,
+                    #101a31
+                );
+        }
+
+
+        /* =========================
+           GAME CONTAINER
+        ========================= */
+
+        .game {
+
+            width: min(1000px, 94vw);
+
+            height: min(690px, 94vh);
+
+            min-height: 560px;
+
+            padding: 35px 30px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(19, 32, 55, 0.97),
+                    rgba(10, 20, 38, 0.97)
+                );
+
+            border: 1px solid
+                rgba(255, 255, 255, 0.10);
+
+            border-radius: 28px;
+
+            box-shadow:
+                0 30px 80px
+                rgba(0, 0, 0, 0.55),
+
+                inset 0 1px 0
+                rgba(255, 255, 255, 0.05);
+        }
+
+
+        /* Top colorful line */
+
+        .game::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #00d9ff,
+                    #5865f2,
+                    #c850ff,
+                    #ff4f81
+                );
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+
+            text-align: center;
+
+            margin-bottom: 25px;
+        }
+
+
+        .header h1 {
+
+            font-size:
+                clamp(2rem, 4vw, 3.1rem);
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            color: #ffffff;
+
+            margin-bottom: 7px;
+        }
+
+
+        .header p {
+
+            color: #8fa3bd;
+
+            font-size: 0.95rem;
+
+            letter-spacing: 0.4px;
+        }
+
+
+        /* =========================
+           PLAYER CHOICES
+        ========================= */
+
+        .choices {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap:
+                clamp(30px, 7vw, 75px);
+        }
+
+
+        .choice {
+
+            width:
+                clamp(120px, 14vw, 150px);
+
+            height:
+                clamp(120px, 14vw, 150px);
+
+            padding: 4px;
+
+            border-radius: 50%;
+
+            cursor: pointer;
+
+            position: relative;
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+
+        /* ROCK */
+
+        #rock {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #00d9ff,
+                    #087ea4
+                );
+
+            box-shadow:
+                0 12px 30px
+                rgba(0, 217, 255, 0.20);
+        }
+
+
+        /* PAPER */
+
+        #paper {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #a66cff,
+                    #683de0
+                );
+
+            box-shadow:
+                0 12px 30px
+                rgba(166, 108, 255, 0.20);
+        }
+
+
+        /* SCISSORS */
+
+        #scissors {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff6b8a,
+                    #e83268
+                );
+
+            box-shadow:
+                0 12px 30px
+                rgba(255, 107, 138, 0.20);
+        }
+
+
+        .choice img {
+
+            width: 100%;
+
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+
+            border-radius: 50%;
+        }
+
+
+        /* Hover */
+
+        .choice:hover {
+
+            transform:
+                translateY(-9px)
+                scale(1.06);
+        }
+
+
+        #rock:hover {
+
+            box-shadow:
+                0 20px 45px
+                rgba(0, 217, 255, 0.45);
+        }
+
+
+        #paper:hover {
+
+            box-shadow:
+                0 20px 45px
+                rgba(166, 108, 255, 0.45);
+        }
+
+
+        #scissors:hover {
+
+            box-shadow:
+                0 20px 45px
+                rgba(255, 107, 138, 0.45);
+        }
+
+
+        .choice:active {
+
+            transform: scale(0.93);
+        }
+
+
+        /* =========================
+           LABELS
+        ========================= */
+
+        .choice-labels {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap:
+                clamp(55px, 11vw, 125px);
+
+            margin-top: 11px;
+        }
+
+
+        .choice-labels span {
+
+            width: 100px;
+
+            text-align: center;
+
+            color: #91a4bc;
+
+            font-size: 0.72rem;
+
+            font-weight: 700;
+
+            letter-spacing: 2px;
+        }
+
+
+        /* =========================
+           COMPUTER CHOICE
+        ========================= */
+
+        .computer-choice {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            margin-top: 22px;
+        }
+
+
+        .computer-title {
+
+            color: #6f849f;
+
+            font-size: 0.68rem;
+
+            font-weight: 700;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .computer-card {
+
+            width: 215px;
+
+            height: 76px;
+
+            padding: 7px 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 13px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #182945,
+                    #101d32
+                );
+
+            border: 1px solid #2d4260;
+
+            border-radius: 17px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0, 0, 0, 0.25);
+
+            transition:
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .computer-image {
+
+            width: 60px;
+
+            height: 60px;
+
+            padding: 3px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #00d9ff,
+                    #5865f2
+                );
+        }
+
+
+        .computer-image img {
+
+            width: 100%;
+
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+
+            border-radius: 50%;
+        }
+
+
+        .computer-choice-name {
+
+            min-width: 90px;
+
+            color: #ffffff;
+
+            font-size: 0.95rem;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            text-align: left;
+
+            text-transform: uppercase;
+        }
+
+
+        /* Computer animation */
+
+        .computer-show {
+
+            animation:
+                computerShow 0.45s ease;
+        }
+
+
+        @keyframes computerShow {
+
+            0% {
+
+                opacity: 0;
+
+                transform:
+                    translateY(-12px)
+                    scale(0.85);
+            }
+
+            60% {
+
+                transform:
+                    translateY(3px)
+                    scale(1.04);
+            }
+
+            100% {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+        }
+
+
+        /* =========================
+           SCORE
+        ========================= */
+
+        .score-board {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 25px;
+
+            margin-top: 27px;
+        }
+
+
+        .score-card {
+
+            width: 155px;
+
+            height: 98px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #14233b,
+                    #101c31
+                );
+
+            border: 1px solid #293d59;
+
+            border-radius: 17px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0, 0, 0, 0.25);
+        }
+
+
+        .score-title {
+
+            color: #8094ad;
+
+            font-size: 0.68rem;
+
+            font-weight: 700;
+
+            letter-spacing: 2px;
+        }
+
+
+        #user-score,
+        #comp-score {
+
+            font-size: 3.1rem;
+
+            font-weight: 800;
+
+            line-height: 1;
+
+            margin-top: 7px;
+        }
+
+
+        #user-score {
+
+            color: #00d9ff;
+        }
+
+
+        #comp-score {
+
+            color: #ff638d;
+        }
+
+
+        /* =========================
+           VS
+        ========================= */
+
+        .vs {
+
+            width: 43px;
+
+            height: 43px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            border-radius: 50%;
+
+            background: #1c2b45;
+
+            border: 1px solid #334863;
+
+            color: #a9bad0;
+
+            font-size: 0.7rem;
+
+            font-weight: 800;
+        }
+
+
+        /* =========================
+           MESSAGE
+        ========================= */
+
+        .message-container {
+
+            margin-top: 24px;
+
+            text-align: center;
+        }
+
+
+        #msg {
+
+            display: inline-block;
+
+            min-width: 255px;
+
+            max-width: 90vw;
+
+            padding: 12px 25px;
+
+            border-radius: 30px;
+
+            background: #1c2b45;
+
+            border: 1px solid #334863;
+
+            color: #edf3fa;
+
+            font-size: 0.95rem;
+
+            font-weight: 600;
+
+            transition: 0.3s ease;
+        }
+
+
+        /* =========================
+           POP ANIMATION
+        ========================= */
+
+        .pop {
+
+            animation:
+                popAnimation 0.4s ease;
+        }
+
+
+        @keyframes popAnimation {
+
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.25);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+
+        /* =========================
+           LAPTOP HEIGHT
+        ========================= */
+
+        @media (max-height: 750px) {
+
+            .game {
+
+                height: 94vh;
+
+                min-height: 500px;
+
+                padding-top: 25px;
+            }
+
+
+            .header {
+
+                margin-bottom: 18px;
+            }
+
+
+            .choice {
+
+                width: 120px;
+
+                height: 120px;
+            }
+
+
+            .computer-choice {
+
+                margin-top: 17px;
+            }
+
+
+            .score-board {
+
+                margin-top: 20px;
+            }
+
+
+            .message-container {
+
+                margin-top: 17px;
+            }
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            body {
+
+                overflow: auto;
+
+                padding: 12px;
+            }
+
+
+            .game {
+
+                width: 100%;
+
+                height: auto;
+
+                min-height: 0;
+
+                padding: 28px 12px;
+
+                overflow: visible;
+
+                border-radius: 22px;
+            }
+
+
+            .header {
+
+                margin-bottom: 28px;
+            }
+
+
+            .header h1 {
+
+                font-size: 1.9rem;
+            }
+
+
+            .header p {
+
+                font-size: 0.8rem;
+            }
+
+
+            .choices {
+
+                gap: 12px;
+            }
+
+
+            .choice {
+
+                width: 92px;
+
+                height: 92px;
+            }
+
+
+            .choice-labels {
+
+                gap: 20px;
+
+                margin-top: 9px;
+            }
+
+
+            .choice-labels span {
+
+                width: 78px;
+
+                font-size: 0.6rem;
+            }
+
+
+            .computer-choice {
+
+                margin-top: 22px;
+            }
+
+
+            .computer-card {
+
+                width: 195px;
+
+                height: 70px;
+            }
+
+
+            .computer-image {
+
+                width: 54px;
+
+                height: 54px;
+            }
+
+
+            .computer-choice-name {
+
+                font-size: 0.85rem;
+            }
+
+
+            .score-board {
+
+                gap: 9px;
+
+                margin-top: 25px;
+            }
+
+
+            .score-card {
+
+                width: 112px;
+
+                height: 88px;
+            }
+
+
+            #user-score,
+            #comp-score {
+
+                font-size: 2.5rem;
+            }
+
+
+            .vs {
+
+                width: 37px;
+
+                height: 37px;
+
+                font-size: 0.6rem;
+            }
+
+
+            .message-container {
+
+                margin-top: 22px;
+            }
+
+
+            #msg {
+
+                min-width: 0;
+
+                font-size: 0.8rem;
+
+                padding: 11px 18px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="game">
+
+
+        <!-- =========================
+             HEADER
+        ========================= -->
+
+        <div class="header">
+
+            <h1>
+                Rock Paper Scissors
+            </h1>
+
+            <p>
+                Choose your move and beat the computer
+            </p>
+
+        </div>
+
+
+
+        <!-- =========================
+             PLAYER CHOICES
+        ========================= -->
+
+        <div class="choices">
+
+
+            <div
+                class="choice"
+                id="rock"
+            >
+
+                <img
+                    src="./images/rock.png"
+                    alt="Rock"
+                >
+
+            </div>
+
+
+            <div
+                class="choice"
+                id="paper"
+            >
+
+                <img
+                    src="./images/paper.png"
+                    alt="Paper"
+                >
+
+            </div>
+
+
+            <div
+                class="choice"
+                id="scissors"
+            >
+
+                <img
+                    src="./images/scissors.png"
+                    alt="Scissors"
+                >
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =========================
+             LABELS
+        ========================= -->
+
+        <div class="choice-labels">
+
+            <span>
+                ROCK
+            </span>
+
+            <span>
+                PAPER
+            </span>
+
+            <span>
+                SCISSORS
+            </span>
+
+        </div>
+
+
+
+        <!-- =========================
+             COMPUTER CHOICE
+        ========================= -->
+
+        <div class="computer-choice">
+
+            <div class="computer-title">
+                COMPUTER CHOSE
+            </div>
+
+
+            <div class="computer-card">
+
+                <div class="computer-image">
+
+                    <img
+                        id="computer-choice-img"
+                        src="./images/rock.png"
+                        alt="Computer Choice"
+                    >
+
+                </div>
+
+
+                <div
+                    id="computer-choice-name"
+                    class="computer-choice-name"
+                >
+                    WAITING...
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             SCORE
+        ========================= -->
+
+        <div class="score-board">
+
+
+            <div class="score-card">
+
+                <div class="score-title">
+                    YOU
+                </div>
+
+                <div id="user-score">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="vs">
+                VS
+            </div>
+
+
+            <div class="score-card">
+
+                <div class="score-title">
+                    COMPUTER
+                </div>
+
+                <div id="comp-score">
+                    0
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =========================
+             RESULT
+        ========================= -->
+
+        <div class="message-container">
+
+            <p id="msg">
+                Make your move!
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
